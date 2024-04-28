@@ -1,0 +1,84 @@
+/* General Body Styling */
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #ff416c, #ff4b2b); /* Red gradient background */
+    color: #ffffff; /* White text color */
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box; /* Ensures padding does not affect the overall width and height */
+}
+
+/* Navigation Bar */
+nav {
+    background-color: rgba(0, 0, 0, 0.8); /* Slightly transparent black */
+    color: #fff;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    position: fixed;
+    width: 100%;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    border-bottom: 2px solid #ff4b2b; /* Highlighted border bottom */
+}
+
+nav a {
+    color: #ffffff;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 10px; /* Rounded corners for links */
+    transition: background-color 0.3s;
+}
+
+nav a:hover {
+    background-color: #ff4b2b; /* Hover effect for links */
+}
+
+/* Content Styling */
+.container {
+    margin-top: 60px; /* Push down content below the navbar */
+    padding: 20px;
+    border-radius: 15px; /* Rounded corners for containers */
+    background-color: rgba(255, 255, 255, 0.1); /* Slightly transparent white background for content */
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Main and Sections Styling */
+.main, .section {
+    margin-bottom: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+/* Footer Styling */
+footer {
+    text-align: center;
+    padding: 15px 0;
+    margin-top: 20px;
+    background-color: rgba(0, 0, 0, 0.8);
+    color: #fff;
+    position: relative;
+    clear: both;
+    width: 100%;
+}
+
+/* Responsive Design for smaller devices */
+@media (max-width: 768px) {
+    nav {
+        flex-direction: column;
+    }
+    .container {
+        width: 90%;
+        padding: 10px;
+    }
+}
+
+/* Adding a website title in the navbar */
+.site-title {
+    font-weight: bold;
+    font-size: 1.5em;
+}
