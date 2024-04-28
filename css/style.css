@@ -23,16 +23,16 @@ nav {
     z-index: 1000;
 }
 
-nav .home-link {
-    padding: 10px 20px;
-    border-radius: 50px; /* Fully rounded edges */
-    background-color: #ff416c; /* Solid red background */
-    text-decoration: none;
+.nav-link, .dropdown-button {
     color: #ffffff;
+    text-decoration: none;
+    padding: 10px 20px;
+    border-radius: 20px; /* Rounded edges for buttons */
+    background-color: #ff416c; /* Solid red background */
     transition: background-color 0.3s;
 }
 
-nav .home-link:hover {
+.nav-link:hover, .dropdown-button:hover {
     background-color: #ff4b2b; /* Darker shade of red on hover */
 }
 
