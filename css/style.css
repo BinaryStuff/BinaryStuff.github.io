@@ -13,7 +13,7 @@ nav {
     background-color: rgba(0, 0, 0, 0.8); /* Slightly transparent black */
     color: #fff;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around; /* Evenly spaces the links */
     align-items: center;
     padding: 10px 20px;
     position: fixed;
@@ -27,13 +27,15 @@ nav {
 nav a {
     color: #ffffff;
     text-decoration: none;
-    padding: 8px 15px;
-    border-radius: 10px; /* Rounded corners for links */
-    transition: background-color 0.3s;
+    padding: 10px 20px;
+    border-radius: 50px; /* Fully rounded edges */
+    background-color: #ff416c; /* Solid red background */
+    transition: background-color 0.3s, transform 0.3s;
 }
 
-nav a:hover {
-    background-color: #ff4b2b; /* Hover effect for links */
+nav a:hover, nav a:focus {
+    background-color: #ff4b2b; /* Darker shade of red on hover */
+    transform: scale(1.1); /* Slightly enlarges the button on hover */
 }
 
 /* Content Styling */
