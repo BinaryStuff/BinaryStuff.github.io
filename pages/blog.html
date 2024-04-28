@@ -6,33 +6,34 @@
     <title>Blog</title>
     <link rel="stylesheet" href="../css/style.css">
 </head>
-
-
-
 <body>
-<div id="nav-placeholder"></div>
+    <!-- Navigation placeholder -->
+    <div id="nav-placeholder"></div>
+    
+    <!-- JavaScript to load the navigation HTML -->
+    <script>
+    window.addEventListener('DOMContentLoaded', (event) => {
+        const navElement = document.getElementById('nav-placeholder');
+        fetch('../nav.html')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
+            .then(text => navElement.innerHTML = text)
+            .catch(error => {
+                console.error('There has been a problem with your fetch operation:', error);
+                navElement.innerHTML = `<p>Error loading navigation: ${error.message}</p>`;
+            });
+    });
+    </script>
 
-<script>
-window.addEventListener('DOMContentLoaded', (event) => {
-    const navElement = document.getElementById('nav-placeholder');
-    fetch('/path/to/nav.html')
-        .then(response => response.text())
-        .then(text => navElement.innerHTML = text);
-});
-</script>
-
-
-    <header>
-        <nav>
-            <a href="../index.html">Home</a>
-            <a href="blog.html">Blog</a>
-            <!-- Add more links as you add more pages -->
-        </nav>
-    </header>
-    <div class="main">
+    <div class="container main">
         <h1>Blog</h1>
-        <p>Welcome to my blog! This is where I share my thoughts and updates.</p>
+        <p>Welcome to the blog page. Read our latest posts!</p>
     </div>
+
     <footer>
         <p>&copy; 2024 by Me. All rights reserved.</p>
     </footer>
