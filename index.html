@@ -7,16 +7,20 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <nav>
-        <a href="index.html" class="nav-link">Home</a>
-        <div class="dropdown">
-            <a href="#" class="dropdown-button">Menu</a>
-            <div class="dropdown-content">
-                <a href="pages/blog.html">Blog</a>
-                <!-- Additional links can be added here -->
-            </div>
-        </div>
-    </nav>
+    <!-- Placeholder for the navigation -->
+<div id="nav-placeholder"></div>
+
+<script>
+// This script goes right before the closing </body> tag
+window.addEventListener('DOMContentLoaded', (event) => {
+    const navElement = document.getElementById('nav-placeholder');
+    fetch('nav.html') // Path to your nav.html file
+        .then(response => response.text())
+        .then(text => navElement.innerHTML = text)
+        .catch(error => console.error('Failed to load navigation:', error));
+});
+</script>
+​⬤
     <div class="container main">
         <h1>Welcome to My Website</h1>
         <p>This is the homepage. Explore the sections using the navigation bar above.</p>
