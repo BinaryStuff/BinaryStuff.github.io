@@ -58,6 +58,19 @@
         margin-top: 30px;
         font-size: 24px;
       }
+      #peakBalance {
+        font-size: 18px;
+        margin-top: 10px;
+      }
+      #message {
+        margin-top: 20px;
+        font-size: 20px;
+      }
+      #broken {
+        color: red;
+        font-size: 24px;
+        display: none;
+      }
     </style>
   </head>
   <body>
@@ -110,9 +123,13 @@
     </div>
 
     <div id="message"></div>
+    <div id="broken">You're broke!</div>
 
     <div class="scoreboard">
       <h3>Balance: $<span id="player-balance">200</span></h3>
+      <div id="peakBalance">
+        Peak Balance: $<span id="peak-balance">200</span>
+      </div>
     </div>
 
     <script>
@@ -138,22 +155,7 @@
       let playerTotal = 0;
       let dealerTotal = 0;
       let playerBalance = 200; // Starting balance
-
-      // Load player balance from cookies if available
-      function loadBalance() {
-        const cookieBalance = document.cookie.replace(
-          /(?:(?:^|.*;\s*)playerBalance\s*=\s*([^;]*).*$)|^.*$/,
-          "$1"
-        );
-        if (cookieBalance) {
-          playerBalance = parseInt(cookieBalance);
-        }
-      }
-
-      // Save player balance to cookies
-      function saveBalance() {
-        document.cookie = `playerBalance=${playerBalance}; path=/; max-age=31536000`; // 1 year expiration
-      }
+      let peakBalance = 200; // Track peak balance
 
       function createDeck() {
         deck = [];
@@ -255,7 +257,18 @@
           document.getElementById("message").innerText = `It's a tie!`;
         }
 
-        saveBalance(); // Save new balance to cookies
+        if (playerBalance <= 0) {
+          document.body.style.backgroundColor = "red";
+          document.getElementById("broken").style.display = "block";
+        } else {
+          document.body.style.backgroundColor = "green";
+          document.getElementById("broken").style.display = "none";
+        }
+
+        // Update peak balance
+        peakBalance = Math.max(peakBalance, playerBalance);
+        document.getElementById("peak-balance").innerText = peakBalance;
+
         document.getElementById("player-balance").innerText = playerBalance;
         disableActionButtons();
         document.getElementById("dealBtn").disabled = false;
@@ -324,8 +337,10 @@
           document.getElementById("dealBtn").disabled = false;
         });
 
-      loadBalance(); // Load the player's balance on page load
+      // Reset balance on page load
+      playerBalance = 200;
       document.getElementById("player-balance").innerText = playerBalance;
+      document.getElementById("peak-balance").innerText = peakBalance;
     </script>
   </body>
 </html>
