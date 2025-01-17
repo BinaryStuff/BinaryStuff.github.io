@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Billy's Website</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f0f0;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+      }
+      h1 {
+        background-color: #4caf50;
+        color: white;
+        padding: 20px;
+        margin: 0;
+      }
+      .tiles-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 20px;
+        padding: 40px;
+      }
+      .tile {
+        background-color: #007bff;
+        color: white;
+        padding: 30px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        text-decoration: none;
+      }
+      .tile:hover {
+        background-color: #0056b3;
+      }
+      .coming-soon {
+        background-color: #ff5722;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Billy's Website</h1>
+
+    <div class="tiles-container">
+      <a href="blackjack.html" class="tile">Play Blackjack</a>
+      <a href="#" class="tile coming-soon">Coming Soon</a>
+      <a href="#" class="tile coming-soon">Coming Soon</a>
+      <a href="#" class="tile coming-soon">Coming Soon</a>
+    </div>
+  </body>
+</html>
