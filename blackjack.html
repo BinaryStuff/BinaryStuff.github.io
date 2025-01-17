@@ -58,6 +58,55 @@
         margin-top: 30px;
         font-size: 24px;
       }
+      /* Version styling */
+      #version {
+        position: fixed;
+        bottom: 10px;
+        right: 10px;
+        font-size: 18px;
+        color: white;
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 5px 10px;
+        border-radius: 5px;
+      }
+      /* Bug report button styling */
+      #bugReportBtn {
+        position: fixed;
+        bottom: 50px;
+        right: 10px;
+        background-color: transparent;
+        border: none;
+        cursor: pointer;
+        z-index: 1000;
+      }
+      #bugReportBtn img {
+        width: 40px;
+        height: 40px;
+      }
+      /* Modal (popup) styling */
+      #bugModal {
+        display: none;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: rgba(0, 0, 0, 0.8);
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        z-index: 1001;
+      }
+      #bugModal button {
+        padding: 10px 20px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+      #bugModal button:hover {
+        background-color: #0056b3;
+      }
     </style>
   </head>
   <body>
@@ -114,6 +163,23 @@
     <div class="scoreboard">
       <h3>Balance: $<span id="player-balance">200</span></h3>
       <h3 id="peak-balance">Peak: $200</h3>
+    </div>
+
+    <div id="version">v2.71</div>
+
+    <!-- Bug report button -->
+    <button id="bugReportBtn">
+      <img
+        src="https://static.thenounproject.com/png/6825507-200.png"
+        alt="Bug Icon"
+      />
+    </button>
+
+    <!-- Bug report modal -->
+    <div id="bugModal">
+      <p>Do you want to report a bug?</p>
+      <button id="bugYesBtn">Yes</button>
+      <button id="bugNoBtn">No</button>
     </div>
 
     <script>
@@ -224,14 +290,10 @@
         const betAmount = currentBet;
 
         if (playerTotal > 21) {
-          document.getElementById(
-            "message"
-          ).innerText = `You busted! Dealer wins.`;
+          document.getElementById("message").innerText = `You busted! Dealer wins.`;
           playerBalance -= betAmount; // Deduct only the bet amount if player busts
         } else if (dealerTotal > 21) {
-          document.getElementById(
-            "message"
-          ).innerText = `Dealer busted! You win!`;
+          document.getElementById("message").innerText = `Dealer busted! You win!`;
           playerBalance += betAmount * 2; // Player wins: bet * 2
         } else if (playerTotal > dealerTotal) {
           document.getElementById("message").innerText = `You win!`;
@@ -249,15 +311,12 @@
 
         // Update player balance
         document.getElementById("player-balance").innerText = playerBalance;
-        document.getElementById(
-          "peak-balance"
-        ).innerText = `Peak: $${peakBalance}`;
+        document.getElementById("peak-balance").innerText = `Peak: $${peakBalance}`;
 
         // Check if player is broke
         if (playerBalance <= 0) {
           document.body.style.backgroundColor = "red"; // Change background color to red
-          document.getElementById("message").innerText =
-            "You're broke! You lost.";
+          document.getElementById("message").innerText = "You're broke! You lost.";
         }
 
         disableActionButtons();
@@ -286,7 +345,7 @@
         document.getElementById("message").innerText = ""; // Clear previous messages
 
         // Deduct bet amount from balance immediately for this round
-        playerBalance -= betAmount;
+        playerBalance -= betAmount; 
         document.getElementById("player-balance").innerText = playerBalance;
 
         createDeck();
@@ -325,13 +384,24 @@
         }
       });
 
-      document
-        .getElementById("standBtn")
-        .addEventListener("click", function () {
-          disableActionButtons();
-          dealerPlay();
-          document.getElementById("dealBtn").disabled = false;
-        });
+      document.getElementById("standBtn").addEventListener("click", function () {
+        disableActionButtons();
+        dealerPlay();
+        document.getElementById("dealBtn").disabled = false;
+      });
+
+      // Bug report button functionality
+      document.getElementById("bugReportBtn").addEventListener("click", function () {
+        document.getElementById("bugModal").style.display = "block";
+      });
+
+      document.getElementById("bugYesBtn").addEventListener("click", function () {
+        window.location.href = "mailto:billycolby@ymail.com?subject=Bug Report&body=Describe your bug here.";
+      });
+
+      document.getElementById("bugNoBtn").addEventListener("click", function () {
+        document.getElementById("bugModal").style.display = "none";
+      });
 
       // Initialize page
       document.getElementById("player-balance").innerText = playerBalance;
