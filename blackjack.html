@@ -58,19 +58,6 @@
         margin-top: 30px;
         font-size: 24px;
       }
-      #peakBalance {
-        font-size: 18px;
-        margin-top: 10px;
-      }
-      #message {
-        margin-top: 20px;
-        font-size: 20px;
-      }
-      #broken {
-        color: red;
-        font-size: 24px;
-        display: none;
-      }
     </style>
   </head>
   <body>
@@ -116,20 +103,17 @@
       <input
         type="number"
         id="betAmount"
-        min="20"
-        step="5"
-        placeholder="Min $20"
+        min="1"
+        step="1"
+        placeholder="Min $1"
       />
     </div>
 
     <div id="message"></div>
-    <div id="broken">You're broke!</div>
 
     <div class="scoreboard">
       <h3>Balance: $<span id="player-balance">200</span></h3>
-      <div id="peakBalance">
-        Peak Balance: $<span id="peak-balance">200</span>
-      </div>
+      <h3 id="peak-balance">Peak: $200</h3>
     </div>
 
     <script>
@@ -156,6 +140,7 @@
       let dealerTotal = 0;
       let playerBalance = 200; // Starting balance
       let peakBalance = 200; // Track peak balance
+      let currentBet = 0; // Track current bet
 
       function createDeck() {
         deck = [];
@@ -236,40 +221,45 @@
       }
 
       function checkWinner() {
-        const betAmount = parseInt(document.getElementById("betAmount").value);
+        const betAmount = currentBet;
+
         if (playerTotal > 21) {
           document.getElementById(
             "message"
           ).innerText = `You busted! Dealer wins.`;
-          playerBalance -= betAmount; // Deduct bet from balance
+          playerBalance -= betAmount; // Deduct only the bet amount if player busts
         } else if (dealerTotal > 21) {
           document.getElementById(
             "message"
           ).innerText = `Dealer busted! You win!`;
-          playerBalance += betAmount; // Double the bet on win
+          playerBalance += betAmount * 2; // Player wins: bet * 2
         } else if (playerTotal > dealerTotal) {
           document.getElementById("message").innerText = `You win!`;
-          playerBalance += betAmount; // Double the bet on win
+          playerBalance += betAmount * 2; // Player wins: bet * 2
         } else if (playerTotal < dealerTotal) {
           document.getElementById("message").innerText = `Dealer wins.`;
-          playerBalance -= betAmount; // Deduct bet on loss
+          playerBalance -= betAmount; // Deduct only the bet amount if player loses
         } else {
           document.getElementById("message").innerText = `It's a tie!`;
-        }
-
-        if (playerBalance <= 0) {
-          document.body.style.backgroundColor = "red";
-          document.getElementById("broken").style.display = "block";
-        } else {
-          document.body.style.backgroundColor = "green";
-          document.getElementById("broken").style.display = "none";
+          playerBalance += betAmount; // Refund bet to player in case of a tie
         }
 
         // Update peak balance
         peakBalance = Math.max(peakBalance, playerBalance);
-        document.getElementById("peak-balance").innerText = peakBalance;
 
+        // Update player balance
         document.getElementById("player-balance").innerText = playerBalance;
+        document.getElementById(
+          "peak-balance"
+        ).innerText = `Peak: $${peakBalance}`;
+
+        // Check if player is broke
+        if (playerBalance <= 0) {
+          document.body.style.backgroundColor = "red"; // Change background color to red
+          document.getElementById("message").innerText =
+            "You're broke! You lost.";
+        }
+
         disableActionButtons();
         document.getElementById("dealBtn").disabled = false;
       }
@@ -286,11 +276,18 @@
 
       document.getElementById("dealBtn").addEventListener("click", function () {
         const betAmount = parseInt(document.getElementById("betAmount").value);
-        if (isNaN(betAmount) || betAmount < 20 || betAmount > playerBalance) {
+        if (isNaN(betAmount) || betAmount < 1 || betAmount > playerBalance) {
           document.getElementById("message").innerText =
-            "Invalid bet. Enter a value between $20 and your current balance.";
+            "Invalid bet. Enter a value between $1 and your current balance.";
           return;
         }
+
+        currentBet = betAmount; // Set current bet
+        document.getElementById("message").innerText = ""; // Clear previous messages
+
+        // Deduct bet amount from balance immediately for this round
+        playerBalance -= betAmount;
+        document.getElementById("player-balance").innerText = playerBalance;
 
         createDeck();
         shuffleDeck();
@@ -300,7 +297,6 @@
         dealerHand = [];
         playerTotal = 0;
         dealerTotal = 0;
-        document.getElementById("message").innerText = "";
 
         // Deal initial hands
         dealCard(playerHand);
@@ -337,10 +333,9 @@
           document.getElementById("dealBtn").disabled = false;
         });
 
-      // Reset balance on page load
-      playerBalance = 200;
+      // Initialize page
       document.getElementById("player-balance").innerText = playerBalance;
-      document.getElementById("peak-balance").innerText = peakBalance;
+      document.getElementById("peak-balance").innerText = `Peak: $200`;
     </script>
   </body>
 </html>
