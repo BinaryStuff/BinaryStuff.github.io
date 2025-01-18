@@ -145,11 +145,13 @@ function gameOver() {
     gameOverScreen.style.display = 'block';
 }
 
-document.addEventListener("keydown", (e) => {
-    if (!gameRunning && ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+// Add tap event listener to start or restart the game
+gameArea.addEventListener('click', () => {
+    if (!gameRunning) {
         startGame();
-    } else if (gameRunning) {
-        changeDirection(e);
+    } else {
+        gameOver();
+        startGame();
     }
 });
 
@@ -190,16 +192,6 @@ gameArea.addEventListener('touchmove', (e) => {
             dx = 0;
             dy = -gridSize;
         }
-    }
-});
-
-// Add tap event listener to start or restart the game
-gameArea.addEventListener('click', () => {
-    if (!gameRunning) {
-        startGame();
-    } else {
-        gameOver();
-        startGame();
     }
 });
 
