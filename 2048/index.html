@@ -18,39 +18,46 @@
       <span id="result">Dev High Score is <b>3228</b> good luck!</span>
       <div class="grid"></div>
     </div>
-    <script>
-document.addEventListener('DOMContentLoaded', () => {
-  let isSolverRunning = false
-  let solverInterval
+   <script>
+  document.addEventListener('DOMContentLoaded', () => {
+    // Make the move functions globally available
+    window.moveRight = moveRight
+    window.moveLeft = moveLeft
+    window.moveUp = moveUp
+    window.moveDown = moveDown
 
-  // Solver logic
-  function aiMove() {
-    const moves = ['moveRight', 'moveLeft', 'moveUp', 'moveDown']
-    const randomMove = moves[Math.floor(Math.random() * moves.length)]
-    
-    if (randomMove === 'moveRight') moveRight()
-    else if (randomMove === 'moveLeft') moveLeft()
-    else if (randomMove === 'moveUp') moveUp()
-    else if (randomMove === 'moveDown') moveDown()
-    
-    generate()  // Generate a new number after move
-  }
+    let isSolverRunning = false
+    let solverInterval
 
-  function toggleSolver(e) {
-    if (e.key === 'L' || e.key === 'l') {
-      if (isSolverRunning) {
-        clearInterval(solverInterval)  // Stop the solver
-        isSolverRunning = false
-      } else {
-        solverInterval = setInterval(aiMove, 200)  // Run AI every 200ms
-        isSolverRunning = true
+    // Solver logic
+    function aiMove() {
+      const moves = ['moveRight', 'moveLeft', 'moveUp', 'moveDown']
+      const randomMove = moves[Math.floor(Math.random() * moves.length)]
+      
+      if (randomMove === 'moveRight') moveRight()
+      else if (randomMove === 'moveLeft') moveLeft()
+      else if (randomMove === 'moveUp') moveUp()
+      else if (randomMove === 'moveDown') moveDown()
+      
+      generate()  // Generate a new number after move
+    }
+
+    function toggleSolver(e) {
+      if (e.key === 'L' || e.key === 'l') {
+        if (isSolverRunning) {
+          clearInterval(solverInterval)  // Stop the solver
+          isSolverRunning = false
+        } else {
+          solverInterval = setInterval(aiMove, 200)  // Run AI every 200ms
+          isSolverRunning = true
+        }
       }
     }
-  }
 
-  document.addEventListener('keydown', toggleSolver)
-})
+    document.addEventListener('keydown', toggleSolver)
+  })
 </script>
+
 
 
 
