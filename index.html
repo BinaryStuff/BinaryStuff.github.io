@@ -5,56 +5,76 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Billy's Website</title>
     <style>
+      /* General body styles */
       body {
+        background-color: #000; /* Dark background */
+        color: #ff4c4c; /* Red text color */
         font-family: Arial, sans-serif;
-        background-color: #f0f0f0;
+        text-align: center;
         margin: 0;
         padding: 0;
-        text-align: center;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
       }
+
+      /* Header styles */
       h1 {
-        background-color: #4caf50;
-        color: white;
-        padding: 20px;
-        margin: 0;
+        color: #ff4c4c;
+        margin-bottom: 20px;
+        font-size: 36px;
       }
+
+      /* Tiles container styles */
       .tiles-container {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         gap: 20px;
         padding: 40px;
+        width: 100%;
+        max-width: 800px;
       }
+
+      /* Individual tile styles */
       .tile {
-        background-color: #007bff;
-        color: white;
-        padding: 30px;
+        background-color: #333; /* Dark background for each tile */
+        color: #ff4c4c;
+        padding: 20px;
         border-radius: 10px;
         text-align: center;
         font-size: 18px;
         cursor: pointer;
         transition: background-color 0.3s;
         text-decoration: none;
+        border: 1px solid #ff4c4c; /* Red border */
       }
+
+      /* Tile hover effect */
       .tile:hover {
-        background-color: #0056b3;
+        background-color: #555; /* Lighter dark background on hover */
       }
+
+      /* Coming soon tile */
       .coming-soon {
         background-color: #ff5722;
       }
+
       /* Version styling */
       #version {
-        position: fixed;
+        position: absolute;
         bottom: 10px;
         right: 10px;
-        font-size: 18px;
-        color: white;
+        font-size: 14px;
+        color: #888;
         background-color: rgba(0, 0, 0, 0.5);
         padding: 5px 10px;
         border-radius: 5px;
       }
-      /* Bug report button styling */
+
+      /* Bug report button */
       #bugReportBtn {
-        position: fixed;
+        position: absolute;
         bottom: 50px;
         right: 10px;
         background-color: transparent;
@@ -62,11 +82,13 @@
         cursor: pointer;
         z-index: 1000;
       }
+
       #bugReportBtn img {
         width: 40px;
         height: 40px;
       }
-      /* Modal (popup) styling */
+
+      /* Modal for bug report */
       #bugModal {
         display: none;
         position: fixed;
@@ -79,6 +101,7 @@
         border-radius: 10px;
         z-index: 1001;
       }
+
       #bugModal button {
         padding: 10px 20px;
         background-color: #007bff;
@@ -87,6 +110,7 @@
         border-radius: 5px;
         cursor: pointer;
       }
+
       #bugModal button:hover {
         background-color: #0056b3;
       }
