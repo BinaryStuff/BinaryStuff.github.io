@@ -139,38 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
     checkForWin()
   }
 
-  // AI Functionality
-  let aiInterval;
-  let aiActive = false;
-
-  function startAI() {
-    aiActive = true;
-    aiInterval = setInterval(() => {
-      const randomDirection = Math.floor(Math.random() * 4); // Random number between 0 and 3
-      if (randomDirection === 0) keyLeft();
-      if (randomDirection === 1) keyRight();
-      if (randomDirection === 2) keyUp();
-      if (randomDirection === 3) keyDown();
-    }, 500); // AI makes a move every 500ms
-  }
-
-  function stopAI() {
-    aiActive = false;
-    clearInterval(aiInterval); // Stop the AI
-  }
-
-  // Show AI Controls when "L" is pressed
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'l' || e.key === 'L') {
-      const aiButtons = document.getElementById('ai-buttons');
-      aiButtons.style.display = aiActive ? 'none' : 'block';
-    }
-  });
-
-  // AI Control Buttons
-  document.getElementById('start-ai').addEventListener('click', startAI);
-  document.getElementById('stop-ai').addEventListener('click', stopAI);
-
   // Assign functions to keyCodes
   function control(e) {
     if (e.keyCode === 37) {
@@ -255,10 +223,54 @@ document.addEventListener('DOMContentLoaded', () => {
       else if (squares[i].innerHTML == 32) squares[i].style.backgroundColor = '#e8c064'
       else if (squares[i].innerHTML == 64) squares[i].style.backgroundColor = '#ffab6e'
       else if (squares[i].innerHTML == 128) squares[i].style.backgroundColor = '#fd9982'
-      else if (squares[i].innerHTML == 256) squares[i].style.backgroundColor = '#f77c5f'
-      else if (squares[i].innerHTML == 512) squares[i].style.backgroundColor = '#f75e3e'
-      else if (squares[i].innerHTML == 1024) squares[i].style.backgroundColor = '#f43b5c'
-      else if (squares[i].innerHTML == 2048) squares[i].style.backgroundColor = '#f21523'
+      else if (squares[i].innerHTML == 256) squares[i].style.backgroundColor = '#ead79c'
+      else if (squares[i].innerHTML == 512) squares[i].style.backgroundColor = '#76daff'
+      else if (squares[i].innerHTML == 1024) squares[i].style.backgroundColor = '#beeaa5'
+      else if (squares[i].innerHTML == 2048) squares[i].style.backgroundColor = '#d7d4f0'
+    }
+  }
+  addColours()
+
+  var myTimer = setInterval(addColours, 50)
+
+  // Mouse swipe functionality
+  gridDisplay.addEventListener('mousedown', startSwipe)
+  gridDisplay.addEventListener('mouseup', endSwipe)
+  gridDisplay.addEventListener('touchstart', startSwipe)
+  gridDisplay.addEventListener('touchend', endSwipe)
+
+  // Start swipe handler
+  function startSwipe(e) {
+    e.preventDefault()
+    if (e.type === 'mousedown') {
+      startX = e.pageX
+      startY = e.pageY
+    } else if (e.type === 'touchstart') {
+      startX = e.touches[0].pageX
+      startY = e.touches[0].pageY
+    }
+  }
+
+  // End swipe handler
+  function endSwipe(e) {
+    e.preventDefault()
+    if (e.type === 'mouseup') {
+      endX = e.pageX
+      endY = e.pageY
+    } else if (e.type === 'touchend') {
+      endX = e.changedTouches[0].pageX
+      endY = e.changedTouches[0].pageY
+    }
+
+    const diffX = endX - startX
+    const diffY = endY - startY
+
+    if (Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX > 0) keyRight()
+      else keyLeft()
+    } else {
+      if (diffY > 0) keyDown()
+      else keyUp()
     }
   }
 })
