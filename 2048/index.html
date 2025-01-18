@@ -18,6 +18,34 @@
       <span id="result">Dev High Score is <b>3228</b> good luck!</span>
       <div class="grid"></div>
     </div>
+    <script>
+  let solverInterval;
+  let isSolverRunning = false;
+
+  // Function to simulate AI move
+  function aiMove() {
+    // Example: A simple strategy for moving right, you can improve this
+    keyRight();
+    // You can adjust this for a smarter strategy later
+  }
+
+  // Toggle solver when "L" is pressed
+  function toggleSolver(e) {
+    if (e.key === 'L' || e.key === 'l') {
+      if (isSolverRunning) {
+        clearInterval(solverInterval);  // Stop the AI if it's running
+        isSolverRunning = false;
+      } else {
+        solverInterval = setInterval(aiMove, 200);  // Run the AI every 200ms
+        isSolverRunning = true;
+      }
+    }
+  }
+
+  // Listen for key presses
+  document.addEventListener('keydown', toggleSolver);
+</script>
+
   </body>
   <!--The JS-->
   <script
