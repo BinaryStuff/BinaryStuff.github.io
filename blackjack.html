@@ -58,7 +58,6 @@
         margin-top: 30px;
         font-size: 24px;
       }
-      /* Version styling */
       #version {
         position: fixed;
         bottom: 10px;
@@ -106,6 +105,12 @@
       }
       #bugModal button:hover {
         background-color: #0056b3;
+      }
+      /* Textarea for bug description */
+      #bugDescription {
+        width: 300px;
+        height: 100px;
+        margin: 10px 0;
       }
     </style>
   </head>
@@ -165,7 +170,7 @@
       <h3 id="peak-balance">Peak: $100</h3>
     </div>
 
-    <div id="version">v3.23</div>
+    <div id="version">v3.25</div>
 
     <!-- Bug report button -->
     <button id="bugReportBtn">
@@ -180,6 +185,15 @@
       <p>Do you want to report a bug?</p>
       <button id="bugYesBtn">Yes</button>
       <button id="bugNoBtn">No</button>
+
+      <div id="bugForm" style="display: none">
+        <h3>Describe the bug:</h3>
+        <textarea
+          id="bugDescription"
+          placeholder="Please describe the bug"
+        ></textarea>
+        <button id="submitBugBtn">Submit</button>
+      </div>
     </div>
 
     <script>
@@ -408,7 +422,19 @@
       });
 
       document.getElementById("bugYesBtn").addEventListener("click", () => {
-        alert("Bug reported! Thank you.");
+        document.getElementById("bugForm").style.display = "block";
+      });
+
+      document.getElementById("submitBugBtn").addEventListener("click", () => {
+        const bugDescription = document.getElementById("bugDescription").value;
+        if (bugDescription) {
+          const mailtoLink = `mailto:billycolby@ymail.com?subject=Bug Report&body=${encodeURIComponent(
+            bugDescription
+          )}`;
+          window.location.href = mailtoLink;
+        } else {
+          alert("Please describe the bug.");
+        }
         document.getElementById("bugModal").style.display = "none";
       });
     </script>
