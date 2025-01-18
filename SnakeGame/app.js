@@ -145,14 +145,21 @@ function gameOver() {
     gameOverScreen.style.display = 'block';
 }
 
-// Add tap event listener to start or restart the game
-gameArea.addEventListener('click', () => {
+// Add event listener for both click and touchstart to start/restart the game
+function startOrRestartGame(e) {
     if (!gameRunning) {
         startGame();
     } else {
         gameOver();
         startGame();
     }
+}
+
+// Handle touchstart and click event to start the game
+gameArea.addEventListener('click', startOrRestartGame);
+gameArea.addEventListener('touchstart', (e) => {
+    e.preventDefault(); // Prevent default touch behavior
+    startOrRestartGame(e);
 });
 
 // Handle touch start for swipe direction
