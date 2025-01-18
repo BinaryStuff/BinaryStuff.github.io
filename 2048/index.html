@@ -18,6 +18,16 @@
       <span id="result">Dev High Score is <b>3228</b> good luck!</span>
       <div class="grid"></div>
     </div>
+
+<script>
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'l' || event.key === 'L') {
+            const audio = new Audio('sfx.mp3');
+            audio.play();
+        }
+    });
+</script>
+    
   <script>
    // Movement functions
    function moveRight() {
