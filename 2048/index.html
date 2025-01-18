@@ -27,7 +27,12 @@
     // Example: You can improve this part to make smarter moves
     const moves = ['keyRight', 'keyLeft', 'keyUp', 'keyDown'];
     const randomMove = moves[Math.floor(Math.random() * moves.length)];
-    window[randomMove]();  // Simulate the move
+
+    // Directly call the corresponding move function
+    if (randomMove === 'keyRight') keyRight();
+    else if (randomMove === 'keyLeft') keyLeft();
+    else if (randomMove === 'keyUp') keyUp();
+    else if (randomMove === 'keyDown') keyDown();
   }
 
   // Toggle solver when "L" is pressed
@@ -46,6 +51,7 @@
   // Listen for key presses
   document.addEventListener('keydown', toggleSolver);
 </script>
+
 
 
   </body>
