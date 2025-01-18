@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Blackjack 1v1</title>
+    <title>Billy's Blackjack</title>
     <style>
       body {
         font-family: Arial, sans-serif;
@@ -58,7 +58,6 @@
         margin-top: 30px;
         font-size: 24px;
       }
-      /* Version styling */
       #version {
         position: fixed;
         bottom: 10px;
@@ -129,6 +128,7 @@
       >Home</a
     >
 
+    <!-- Player's and Dealer's Hands -->
     <div id="player-hand" class="hand">
       <h2>Your Hand</h2>
       <div id="player-cards"></div>
@@ -141,12 +141,14 @@
       <div id="dealer-total">Total: 0</div>
     </div>
 
+    <!-- Buttons -->
     <div class="buttons">
       <button id="hitBtn" disabled>Hit</button>
       <button id="standBtn" disabled>Stand</button>
       <button id="dealBtn">Deal</button>
     </div>
 
+    <!-- Bet Amount -->
     <div>
       <label for="betAmount">Enter Bet Amount ($): </label>
       <input
@@ -158,14 +160,16 @@
       />
     </div>
 
+    <!-- Game Status and Balance -->
     <div id="message"></div>
 
     <div class="scoreboard">
-      <h3>Balance: $<span id="player-balance">200</span></h3>
-      <h3 id="peak-balance">Peak: $200</h3>
+      <h3>Balance: $<span id="player-balance">100</span></h3>
+      <h3 id="peak-balance">Peak: $100</h3>
     </div>
 
-    <div id="version">v2.71</div>
+    <!-- Version Control -->
+    <div id="version">v3.23</div>
 
     <!-- Bug report button -->
     <button id="bugReportBtn">
@@ -204,9 +208,9 @@
       let dealerHand = [];
       let playerTotal = 0;
       let dealerTotal = 0;
-      let playerBalance = 200; // Starting balance
-      let peakBalance = 200; // Track peak balance
-      let currentBet = 0; // Track current bet
+      let playerBalance = 200;
+      let peakBalance = 200;
+      let currentBet = 0;
 
       function createDeck() {
         deck = [];
@@ -235,15 +239,14 @@
         hand.forEach((card) => {
           if (card.value === "A") {
             aces += 1;
-            total += 11; // initially count Ace as 11
+            total += 11;
           } else if (["K", "Q", "J"].includes(card.value)) {
-            total += 10; // Face cards are 10
+            total += 10;
           } else {
-            total += parseInt(card.value); // Number cards
+            total += parseInt(card.value);
           }
         });
 
-        // Adjust for Aces (treat Ace as 1 if total is over 21)
         while (total > 21 && aces > 0) {
           total -= 10;
           aces -= 1;
@@ -254,7 +257,7 @@
 
       function displayHand(elementId, hand) {
         const handElement = document.getElementById(elementId);
-        handElement.innerHTML = ""; // Clear previous cards
+        handElement.innerHTML = "";
         hand.forEach((card) => {
           handElement.innerHTML += `<div class="card">${card.value}<br>${card.suit}</div>`;
         });
@@ -281,6 +284,7 @@
           dealCard(dealerHand);
           dealerTotal = calculateHandTotal(dealerHand);
         }
+
         displayHand("dealer-cards", dealerHand);
         updateTotals();
         checkWinner();
@@ -290,42 +294,39 @@
         const betAmount = currentBet;
 
         if (playerTotal > 21) {
-          document.getElementById("message").innerText = `You busted! Dealer wins.`;
-          playerBalance -= betAmount; // Deduct only the bet amount if player busts
+          document.getElementById(
+            "message"
+          ).innerText = `You busted! Dealer wins.`;
+          playerBalance -= betAmount;
         } else if (dealerTotal > 21) {
-          document.getElementById("message").innerText = `Dealer busted! You win!`;
-          playerBalance += betAmount * 2; // Player wins: bet * 2
+          document.getElementById(
+            "message"
+          ).innerText = `Dealer busted! You win!`;
+          playerBalance += betAmount;
         } else if (playerTotal > dealerTotal) {
           document.getElementById("message").innerText = `You win!`;
-          playerBalance += betAmount * 2; // Player wins: bet * 2
+          playerBalance += betAmount;
         } else if (playerTotal < dealerTotal) {
           document.getElementById("message").innerText = `Dealer wins.`;
-          playerBalance -= betAmount; // Deduct only the bet amount if player loses
+          playerBalance -= betAmount;
         } else {
           document.getElementById("message").innerText = `It's a tie!`;
-          playerBalance += betAmount; // Refund bet to player in case of a tie
         }
 
-        // Update peak balance
         peakBalance = Math.max(peakBalance, playerBalance);
-
-        // Update player balance
         document.getElementById("player-balance").innerText = playerBalance;
-        document.getElementById("peak-balance").innerText = `Peak: $${peakBalance}`;
+        document.getElementById(
+          "peak-balance"
+        ).innerText = `Peak: $${peakBalance}`;
 
-        // Check if player is broke
         if (playerBalance <= 0) {
-          document.body.style.backgroundColor = "red"; // Change background color to red
-          document.getElementById("message").innerText = "You're broke! You lost.";
+          document.body.style.backgroundColor = "red";
+          document.getElementById("message").innerText =
+            "You're broke! You lost.";
         }
 
         disableActionButtons();
         document.getElementById("dealBtn").disabled = false;
-      }
-
-      function enableActionButtons() {
-        document.getElementById("hitBtn").disabled = false;
-        document.getElementById("standBtn").disabled = false;
       }
 
       function disableActionButtons() {
@@ -333,31 +334,27 @@
         document.getElementById("standBtn").disabled = true;
       }
 
-      document.getElementById("dealBtn").addEventListener("click", function () {
-        const betAmount = parseInt(document.getElementById("betAmount").value);
-        if (isNaN(betAmount) || betAmount < 1 || betAmount > playerBalance) {
-          document.getElementById("message").innerText =
-            "Invalid bet. Enter a value between $1 and your current balance.";
+      function enableActionButtons() {
+        document.getElementById("hitBtn").disabled = false;
+        document.getElementById("standBtn").disabled = false;
+      }
+
+      document.getElementById("dealBtn").addEventListener("click", () => {
+        currentBet = parseInt(document.getElementById("betAmount").value);
+        if (
+          isNaN(currentBet) ||
+          currentBet <= 0 ||
+          currentBet > playerBalance
+        ) {
+          alert("Please enter a valid bet.");
           return;
         }
 
-        currentBet = betAmount; // Set current bet
-        document.getElementById("message").innerText = ""; // Clear previous messages
-
-        // Deduct bet amount from balance immediately for this round
-        playerBalance -= betAmount; 
-        document.getElementById("player-balance").innerText = playerBalance;
-
-        createDeck();
-        shuffleDeck();
-
-        // Reset hands and totals
         playerHand = [];
         dealerHand = [];
-        playerTotal = 0;
-        dealerTotal = 0;
-
-        // Deal initial hands
+        deck = [];
+        createDeck();
+        shuffleDeck();
         dealCard(playerHand);
         dealCard(dealerHand);
         dealCard(playerHand);
@@ -368,44 +365,42 @@
         updateTotals();
 
         enableActionButtons();
-        this.disabled = true; // Disable deal button until the round is over
+        document.getElementById("dealBtn").disabled = true;
+        document.getElementById("message").innerText = "";
       });
 
-      document.getElementById("hitBtn").addEventListener("click", function () {
+      document.getElementById("hitBtn").addEventListener("click", () => {
         dealCard(playerHand);
         displayHand("player-cards", playerHand);
         updateTotals();
 
         if (checkForBust(playerTotal)) {
-          document.getElementById("message").innerText =
-            "You busted! Dealer wins.";
+          document.getElementById(
+            "message"
+          ).innerText = `You busted! Dealer wins.`;
+          playerBalance -= currentBet;
+          document.getElementById("player-balance").innerText = playerBalance;
           disableActionButtons();
           document.getElementById("dealBtn").disabled = false;
         }
       });
 
-      document.getElementById("standBtn").addEventListener("click", function () {
-        disableActionButtons();
+      document.getElementById("standBtn").addEventListener("click", () => {
         dealerPlay();
-        document.getElementById("dealBtn").disabled = false;
       });
 
-      // Bug report button functionality
-      document.getElementById("bugReportBtn").addEventListener("click", function () {
-        document.getElementById("bugModal").style.display = "block";
+      // Bug report handling
+      const bugModal = document.getElementById("bugModal");
+      document.getElementById("bugReportBtn").addEventListener("click", () => {
+        bugModal.style.display = "block";
       });
-
-      document.getElementById("bugYesBtn").addEventListener("click", function () {
-        window.location.href = "mailto:billycolby@ymail.com?subject=Bug Report&body=Describe your bug here.";
+      document.getElementById("bugNoBtn").addEventListener("click", () => {
+        bugModal.style.display = "none";
       });
-
-      document.getElementById("bugNoBtn").addEventListener("click", function () {
-        document.getElementById("bugModal").style.display = "none";
+      document.getElementById("bugYesBtn").addEventListener("click", () => {
+        window.open("https://github.com/OpenAI/bugreport", "_blank");
+        bugModal.style.display = "none";
       });
-
-      // Initialize page
-      document.getElementById("player-balance").innerText = playerBalance;
-      document.getElementById("peak-balance").innerText = `Peak: $200`;
     </script>
   </body>
 </html>
