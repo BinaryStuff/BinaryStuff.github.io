@@ -45,9 +45,10 @@
         const event = new KeyboardEvent('keydown', {
             keyCode: keyCode,
             which: keyCode,
-            bubbles: true
+            bubbles: true,
+            cancelable: true // Allow canceling the event if needed
         });
-        document.dispatchEvent(event);
+        document.dispatchEvent(event); // Trigger the event
     }
 
     // Define key codes for arrow keys
@@ -92,6 +93,7 @@
         }
     });
 </script>
+
   </body>
   <!--The JS-->
   <script
