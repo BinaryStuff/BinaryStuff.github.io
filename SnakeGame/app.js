@@ -193,6 +193,16 @@ gameArea.addEventListener('touchmove', (e) => {
     }
 });
 
+// Add tap event listener to start or restart the game
+gameArea.addEventListener('click', () => {
+    if (!gameRunning) {
+        startGame();
+    } else {
+        gameOver();
+        startGame();
+    }
+});
+
 // Initialize food for the first run
 createFood();
 
