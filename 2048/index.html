@@ -22,21 +22,22 @@
   let solverInterval;
   let isSolverRunning = false;
 
-  // Function to simulate AI move
+  // Start the AI that presses right, left, up, or down
   function aiMove() {
-    // Example: A simple strategy for moving right, you can improve this
-    keyRight();
-    // You can adjust this for a smarter strategy later
+    // Example: You can improve this part to make smarter moves
+    const moves = ['keyRight', 'keyLeft', 'keyUp', 'keyDown'];
+    const randomMove = moves[Math.floor(Math.random() * moves.length)];
+    window[randomMove]();  // Simulate the move
   }
 
   // Toggle solver when "L" is pressed
   function toggleSolver(e) {
     if (e.key === 'L' || e.key === 'l') {
       if (isSolverRunning) {
-        clearInterval(solverInterval);  // Stop the AI if it's running
+        clearInterval(solverInterval);  // Stop the solver
         isSolverRunning = false;
       } else {
-        solverInterval = setInterval(aiMove, 200);  // Run the AI every 200ms
+        solverInterval = setInterval(aiMove, 200);  // Run AI every 200ms
         isSolverRunning = true;
       }
     }
@@ -45,6 +46,7 @@
   // Listen for key presses
   document.addEventListener('keydown', toggleSolver);
 </script>
+
 
   </body>
   <!--The JS-->
