@@ -1,0 +1,39 @@
+/* Basic styles to normalize the page and center the game area */
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #222222;
+    font-family: 'Arial', sans-serif;
+}
+
+/* Styling for the canvas where the game will be played */
+#gameArea {
+    width: 600px;  /* Increased size for better visibility */
+    height: 600px; /* Increased size for better visibility */
+    border: 2px solid #fff; /* Make the border thicker to match the increased size */
+    background-color: #000; /* Dark background for the game area */
+    position: relative; /* Needed to position elements absolutely within the canvas */
+}
+
+/* Overlay screens for starting the game and game over notifications */
+#startScreen, #gameOverScreen {
+    color: white; /* White text is easily visible on the dark background */
+    position: absolute; /* Positioning relative to the parent element, which is body in this case */
+    top: 50%; /* Center vertically */
+    left: 50%; /* Center horizontally */
+    transform: translate(-50%, -50%); /* Perfect center alignment */
+    font-size: 24px; /* Larger font size for better readability */
+    text-align: center; /* Center the text inside the div */
+    padding: 20px; /* Padding to ensure text does not touch the edges */
+    border-radius: 10px; /* Rounded corners for a softer look */
+    background: rgba(0, 0, 0, 0.8); /* Semi-transparent black background */
+    display: none; /* Start hidden, shown by JavaScript */
+}
+
+/* Specific styles for the game over screen to make it visually distinct */
+#gameOverScreen {
+    color: red; /* Red color to indicate game over */
+}
