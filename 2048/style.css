@@ -2,7 +2,7 @@ body {
   background-color: #707070;
   display: flex;
   justify-content: center;
-  font-family: "Clear Sans", "Helvetica Neue"
+  font-family: "Clear Sans", "Helvetica Neue";
 }
 
 h1 {
@@ -23,7 +23,7 @@ h1 {
   margin-bottom: 20px;
 }
 
-.grid{
+.grid {
   display: flex;
   flex-wrap: wrap;
   width: 456px;
@@ -62,4 +62,43 @@ h1 {
 
 .score-title {
   font-size: 16px;
+}
+
+/* AI Control Button Styles */
+#ai-buttons {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+#start-ai, #stop-ai {
+  padding: 10px 20px;
+  background-color: #f2b179;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  margin: 0 10px;
+  transition: background-color 0.3s;
+}
+
+#start-ai:hover, #stop-ai:hover {
+  background-color: #e09c6b;
+}
+
+#start-ai:active, #stop-ai:active {
+  background-color: #e08556;
+}
+
+#ai-buttons {
+  display: none; /* Hide initially */
+}
+
+/* Styling for the result text */
+#result {
+  font-size: 20px;
+  color: #d8d8d8;
+  text-align: center;
+  margin-top: 20px;
 }
