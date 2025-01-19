@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Billy's Countdown Timers</title>
+    <style>
+      body {
+        background-color: #121212;
+        color: #ff4c4c;
+        font-family: Arial, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+      }
+
+      h1 {
+        margin-top: 20px;
+        color: #ff4c4c;
+      }
+
+      .current-time {
+        font-size: 18px;
+        color: #fff;
+        margin-top: 10px;
+      }
+
+      .timer-container {
+        margin-top: 40px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .timer {
+        background-color: #333;
+        margin: 10px;
+        padding: 15px;
+        border-radius: 10px;
+        width: 80%;
+        max-width: 400px;
+        border: 1px solid #ff4c4c;
+      }
+
+      .timer h2 {
+        color: #ff4c4c;
+      }
+
+      .timer .event-time {
+        font-size: 14px;
+        color: #fff;
+        margin-bottom: 10px;
+      }
+
+      .timer .countdown {
+        font-size: 24px;
+        color: #ff5722;
+      }
+
+      .timer .delete-btn {
+        margin-top: 10px;
+        background-color: #ff4c4c;
+        color: #fff;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      .timer .delete-btn:hover {
+        background-color: #d43f3f;
+      }
+
+      .add-event-container {
+        margin-top: 40px;
+      }
+
+      .add-event-container input,
+      .add-event-container button {
+        padding: 10px;
+        margin: 5px;
+        border-radius: 5px;
+        font-size: 16px;
+      }
+
+      .add-event-container input {
+        width: 200px;
+      }
+
+      .add-event-container button {
+        background-color: #ff4c4c;
+        color: #fff;
+        border: none;
+      }
+
+      .add-event-container button:hover {
+        background-color: #d43f3f;
+      }
+
+      /* Icons */
+      .home-icon,
+      .trash-icon {
+        position: fixed;
+        top: 20px;
+        font-size: 30px;
+        cursor: pointer;
+        color: #ff4c4c;
+        background-color: #121212;
+        border: none;
+        border-radius: 50%;
+        padding: 10px;
+        z-index: 1000;
+      }
+
+      .home-icon {
+        left: 20px;
+      }
+
+      .trash-icon {
+        right: 20px;
+      }
+
+      /* Hover effect for icons */
+      .home-icon:hover,
+      .trash-icon:hover {
+        background-color: #d43f3f;
+      }
+
+      /* Modal for confirmation */
+      .confirm-modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7);
+        display: none;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .confirm-box {
+        background-color: #333;
+        padding: 20px;
+        border-radius: 10px;
+        color: #fff;
+        text-align: center;
+        font-size: 18px;
+      }
+
+      .confirm-buttons {
+        margin-top: 20px;
+      }
+
+      .confirm-buttons button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #ff4c4c;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .confirm-buttons button:hover {
+        background-color: #d43f3f;
+      }
+
+      /* Responsiveness */
+      @media (max-width: 768px) {
+        .home-icon,
+        .trash-icon {
+          font-size: 25px;
+          padding: 8px;
+        }
+
+        .add-event-container input {
+          width: 150px;
+        }
+
+        .timer {
+          width: 90%;
+        }
+      }
+
+      @media (max-width: 480px) {
+        h1 {
+          font-size: 24px;
+        }
+
+        .current-time {
+          font-size: 14px;
+        }
+
+        .timer {
+          width: 95%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <button class="home-icon" onclick="window.location.href='index.html'">
+      🏠
+    </button>
+    <button class="trash-icon" onclick="toggleConfirmModal()">🗑️</button>
+
+    <div class="confirm-modal" id="confirmModal">
+      <div class="confirm-box">
+        <p>Are you sure you want to clear all timers?</p>
+        <div class="confirm-buttons">
+          <button onclick="clearAllTimers()">Yes</button>
+          <button onclick="closeConfirmModal()">No</button>
+        </div>
+      </div>
+    </div>
+
+    <h1>Billy's Countdown Timers</h1>
+    <div class="current-time" id="current-time"></div>
+
+    <div class="timer-container" id="timer-container"></div>
+
+    <div class="add-event-container">
+      <input type="date" id="event-date" />
+      <input type="time" id="event-time" />
+      <input type="text" id="event-title" placeholder="Event Title" />
+      <button onclick="addEvent()">Add Event</button>
+    </div>
+
+    <script>
+      const timerContainer = document.getElementById("timer-container");
+      const currentTimeElement = document.getElementById("current-time");
+
+      // Update current time every second
+      function updateCurrentTime() {
+        const currentDate = new Date();
+        currentTimeElement.innerHTML = `Current Time: ${currentDate.toLocaleString()}`;
+      }
+
+      setInterval(updateCurrentTime, 1000);
+
+      // Load events from browser storage
+      function loadEvents() {
+        const events = JSON.parse(localStorage.getItem("events")) || [];
+        timerContainer.innerHTML = "";
+
+        events.forEach((event, index) => {
+          const eventTime = new Date(event.date + " " + event.time);
+          const currentTime = new Date();
+          const timeDiff = eventTime - currentTime;
+          const months = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 30));
+          const days = Math.floor(
+            (timeDiff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+          );
+          const hours = Math.floor(
+            (timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          const minutes = Math.floor(
+            (timeDiff % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+          const timerElement = document.createElement("div");
+          timerElement.classList.add("timer");
+
+          timerElement.innerHTML = `
+            <h2>${event.title}</h2>
+            <div class="event-time">${event.date} ${event.time}</div>
+            <div class="countdown">${months > 0 ? months + " months " : ""}${
+            days > 0 ? days + " days " : ""
+          }${
+            hours > 0 ? hours + " hours " : ""
+          }${minutes} minutes ${seconds} seconds</div>
+            <button class="delete-btn" onclick="removeEvent(${index})">Remove</button>
+          `;
+
+          timerContainer.appendChild(timerElement);
+        });
+      }
+
+      // Add event to local storage
+      function addEvent() {
+        const eventTitle = document.getElementById("event-title").value;
+        const eventDate = document.getElementById("event-date").value;
+        const eventTime =
+          document.getElementById("event-time").value || "12:00";
+
+        if (!eventTitle || !eventDate) {
+          alert("Please fill in all fields.");
+          return;
+        }
+
+        const newEvent = {
+          title: eventTitle,
+          date: eventDate,
+          time: eventTime,
+        };
+        const events = JSON.parse(localStorage.getItem("events")) || [];
+        events.push(newEvent);
+        localStorage.setItem("events", JSON.stringify(events));
+
+        document.getElementById("event-title").value = "";
+        document.getElementById("event-date").value = "";
+        document.getElementById("event-time").value = "";
+
+        loadEvents();
+      }
+
+      // Remove event from local storage
+      function removeEvent(index) {
+        const events = JSON.parse(localStorage.getItem("events")) || [];
+        events.splice(index, 1);
+        localStorage.setItem("events", JSON.stringify(events));
+        loadEvents();
+      }
+
+      // Clear all events from local storage
+      function clearAllTimers() {
+        localStorage.removeItem("events");
+        loadEvents();
+        closeConfirmModal();
+      }
+
+      // Toggle the confirmation modal
+      function toggleConfirmModal() {
+        document.getElementById("confirmModal").style.display = "flex";
+      }
+
+      // Close the confirmation modal
+      function closeConfirmModal() {
+        document.getElementById("confirmModal").style.display = "none";
+      }
+
+      // Initialize
+      loadEvents();
+    </script>
+  </body>
+</html>
