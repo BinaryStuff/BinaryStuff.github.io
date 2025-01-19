@@ -332,6 +332,36 @@
 
       // Initialize
       loadEvents();
+
+// Update countdown timers every second
+setInterval(function() {
+  const eventElements = document.querySelectorAll('.timer');
+
+  eventElements.forEach(function(eventElement, index) {
+    const eventTitle = eventElement.querySelector('h2').textContent;
+    const eventTimeElement = eventElement.querySelector('.event-time').textContent;
+    const eventDate = eventTimeElement.split(' ')[0];
+    const eventTime = eventTimeElement.split(' ')[1];
+
+    const eventDateTime = new Date(eventDate + " " + eventTime);
+    const currentTime = new Date();
+    const timeDiff = eventDateTime - currentTime;
+
+    const months = Math.floor(timeDiff / (1000 * 60 * 60 * 24 * 30));
+    const days = Math.floor((timeDiff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+    const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+
+    // Update the countdown for the current event
+    eventElement.querySelector('.countdown').textContent = 
+      (months > 0 ? months + " months " : "") +
+      (days > 0 ? days + " days " : "") +
+      (hours > 0 ? hours + " hours " : "") +
+      minutes + " minutes " + 
+      seconds + " seconds";
+  });
+}, 1000);
     </script>
   </body>
 </html>
