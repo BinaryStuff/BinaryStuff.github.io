@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" href="https://avatars.githubusercontent.com/u/145824344?v=4" type="image/png">
+    <link
+      rel="icon"
+      href="https://avatars.githubusercontent.com/u/145824344?v=4"
+      type="image/png"
+    />
 
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -121,6 +125,44 @@
   <body>
     <h1>Billy's Website</h1>
 
+    <form
+      action="https://www.google.com/search"
+      method="get"
+      target="_blank"
+      style="margin: 20px auto; text-align: center"
+    >
+      <input
+        type="text"
+        name="q"
+        placeholder="Search Google"
+        style="
+          padding: 10px;
+          border: 2px solid red;
+          background-color: black;
+          color: white;
+          width: 300px;
+          font-size: 16px;
+          border-radius: 5px;
+        "
+      />
+      <input
+        type="submit"
+        value="Search"
+        style="
+          padding: 10px 20px;
+          background-color: #333;
+          color: red;
+          border: 2px solid red;
+          border-radius: 5px;
+          cursor: pointer;
+          font-size: 16px;
+          transition: background-color 0.3s ease;
+        "
+        onmouseover="this.style.backgroundColor='red'; this.style.color='black';"
+        onmouseout="this.style.backgroundColor='#333'; this.style.color='red';"
+      />
+    </form>
+
     <div class="tiles-container">
       <a href="blackjack.html" class="tile">Blackjack</a>
       <a href="piano2/pianomk2.html" class="tile">Piano MK2</a>
@@ -170,8 +212,5 @@
           document.getElementById("bugModal").style.display = "none";
         });
     </script>
-
-
-    
   </body>
 </html>
