@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Contact | Billy's Custom PC Builds</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <!-- HEADER / NAVBAR -->
+    <header>
+      <nav class="navbar">
+        <div class="logo">
+          <img src="assets/images/logo.jpg" alt="Billy's Logo" />
+        </div>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="services.html">Services</a></li>
+          <li><a href="portfolio.html">Portfolio</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- CONTACT SECTION -->
+    <section class="contact-section">
+      <div class="section-heading">
+        <h2>Contact Me</h2>
+        <p>
+          Got a question, need advice, or want to discuss your custom PC build?
+          Fill out the form below and I'll get back to you personally.
+        </p>
+      </div>
+      <!-- Formspree Form -->
+      <form
+        action="https://formspree.io/f/xqapkqnr"
+        method="POST"
+        class="contact-form"
+      >
+        <input type="text" name="name" placeholder="Your Name" required />
+        <input type="email" name="email" placeholder="Your Email" required />
+        <textarea name="message" placeholder="Your Message" required></textarea>
+        <input type="hidden" name="_subject" value="New inquiry from website" />
+        <button type="submit">Send</button>
+      </form>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="footer-content">
+        <p>&copy; 2025 Billy's Custom PC Builds. All rights reserved.</p>
+      </div>
+    </footer>
+
+    <script src="js/scripts.js"></script>
+  </body>
+</html>
