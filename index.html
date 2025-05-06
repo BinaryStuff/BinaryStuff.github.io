@@ -3,110 +3,348 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | My PC Building Service</title>
-    <!-- Link to your stylesheet -->
-    <link rel="stylesheet" href="css/styles.css" />
+    <title>Billy's Radio</title>
+    <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/uiverse.io@latest/uiverse.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #121212;
+        color: #ffffff;
+        display: flex;
+        height: 100vh;
+        overflow: hidden;
+      }
+      .sidebar {
+        width: 30%;
+        background-color: #1f1f1f;
+        overflow-y: auto;
+        transition: 0.3s ease;
+        padding: 10px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .sidebar.hidden {
+        width: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+      .main {
+        flex: 1;
+        padding: 20px;
+        transition: 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-start;
+        overflow-y: auto;
+        text-align: center;
+        position: relative;
+      }
+      .toggle-button {
+        position: absolute;
+        top: 10px;
+        width: 30px;
+        height: 30px;
+        border-radius: 50%;
+        background: #333;
+        color: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 10;
+        transition: transform 0.3s ease;
+      }
+      .toggle-button.rotated {
+        transform: rotate(180deg);
+      }
+      .toggle-left {
+        left: 10px;
+      }
+      .toggle-right {
+        right: 10px;
+      }
+      .station-item {
+        padding: 10px;
+        background: #2a2a2a;
+        margin-bottom: 8px;
+        border-radius: 6px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        cursor: pointer;
+        width: 100%;
+      }
+      .station-item:hover {
+        background: #3a3a3a;
+      }
+      .favorite-btn {
+        font-size: 20px;
+        color: #888;
+        cursor: pointer;
+      }
+      .favorite-btn:hover,
+      .favorite-btn.favorited {
+        color: #ffc107;
+      }
+      .now-playing img {
+        width: 300px;
+        max-width: 100%;
+        border-radius: 10px;
+        margin-bottom: 10px;
+      }
+      #station-search {
+        height: 50px;
+        font-size: 16px;
+        padding: 10px;
+      }
+      #player-controls {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        align-items: center;
+        background: rgba(0, 0, 0, 0.7);
+        padding: 10px 20px;
+        border-radius: 12px;
+        z-index: 20;
+      }
+      .container {
+        --color: white;
+        --size: 30px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: relative;
+        cursor: pointer;
+        font-size: var(--size);
+        user-select: none;
+        fill: var(--color);
+      }
+      .container .play {
+        position: absolute;
+        animation: keyframes-fill 0.3s;
+      }
+      .container .pause {
+        position: absolute;
+        display: none;
+        animation: keyframes-fill 0.3s;
+      }
+      .container input:checked ~ .play {
+        display: none;
+      }
+      .container input:checked ~ .pause {
+        display: block;
+      }
+      .container input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+      }
+      @keyframes keyframes-fill {
+        0% {
+          transform: scale(0);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.1);
+        }
+      }
+    </style>
   </head>
   <body>
-    <!-- SCRIPTS -->
-    <script src="js/scripts.js"></script>
-  </body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Home | Billy's Custom PC Builds</title>
-    <link rel="stylesheet" href="css/styles.css" />
-  </head>
-  <body>
-    <!-- HEADER / NAVBAR -->
-    <header>
-      <nav class="navbar">
-        <div class="logo">
-          <img src="assets/images/logo.jpg" alt="Billy's Logo" />
-        </div>
-        <ul class="nav-links">
-          <li><a href="index.html" class="active">Home</a></li>
-          <li><a href="services.html">Services</a></li>
-          <li><a href="portfolio.html">Portfolio</a></li>
-          <li><a href="contact.html">Contact</a></li>
-        </ul>
-      </nav>
-    </header>
-
-    <!-- HERO SECTION -->
-    <section class="hero">
-      <div class="hero-content">
-        <h1>I Build Your Dream PC</h1>
-        <p>
-          Hi, I’m Billy – a passionate PC builder crafting high-performance,
-          custom rigs for gamers, creators, and tech enthusiasts. Every build is
-          tailored to your unique needs and budget.
-        </p>
-        <a href="services.html" class="btn">See My Work</a>
-      </div>
-    </section>
-
-    <!-- WHY CHOOSE ME SECTION -->
-    <section class="why-choose-us">
-      <div class="section-heading">
-        <h2>Why Work With Me?</h2>
-        <p>
-          With years of hands-on experience and a genuine love for technology, I
-          offer a personal touch that big companies just can’t match.
-        </p>
-      </div>
-      <div class="why-choose-content">
-        <div class="choose-box">
-          <h3>Personalized Service</h3>
-          <p>
-            I work closely with you to pick the perfect components, ensuring
-            your build meets your exact needs.
-          </p>
-        </div>
-        <div class="choose-box">
-          <h3>Transparent Pricing</h3>
-          <p>
-            No hidden fees or upsells—just honest advice and a clear breakdown
-            of costs.
-          </p>
-        </div>
-        <div class="choose-box">
-          <h3>Expert Guidance</h3>
-          <p>
-            I’m here to answer questions, offer suggestions, and help you
-            understand every step of the build.
-          </p>
-        </div>
-        <div class="choose-box">
-          <h3>Quality Components</h3>
-          <p>
-            I only use trusted brands to ensure that your PC is reliable, fast,
-            and built to last.
-          </p>
-        </div>
-      </div>
-    </section>
-
-    <!-- CALL-TO-ACTION (CTA) -->
-    <section class="cta">
-      <h2>Ready for Your Custom Build?</h2>
-      <p>
-        Let’s chat about your ideal PC setup. I’d love to help bring your vision
-        to life!
+    <div id="leftSidebar" class="sidebar">
+      <input
+        type="search"
+        id="station-search"
+        class="ui-input"
+        placeholder="Search stations..."
+        oninput="searchStations()"
+      />
+      <div id="stations"></div>
+    </div>
+    <div
+      class="toggle-button toggle-left"
+      onclick="toggleSidebar('leftSidebar', this)"
+    >
+      ❮
+    </div>
+    <div class="main" id="mainContent">
+      <h1>Billy's Radio</h1>
+      <p style="margin-top: -10px; color: #bbb; font-size: 0.9em">
+        2025 Edition
       </p>
-      <a href="contact.html" class="btn">Get in Touch</a>
-    </section>
-
-    <!-- FOOTER -->
-    <footer>
-      <div class="footer-content">
-        <p>&copy; 2025 Billy's Custom PC Builds. All rights reserved.</p>
+      <div class="now-playing">
+        <img id="artwork" src="" alt="Artwork" />
+        <div>
+          <div id="track-title">Not Playing</div>
+          <div id="track-artist"></div>
+        </div>
       </div>
-    </footer>
+    </div>
+    <div id="player-controls">
+      <label class="container">
+        <input type="checkbox" onclick="togglePlay()" />
+        <svg
+          class="play"
+          xmlns="http://www.w3.org/2000/svg"
+          height="1em"
+          viewBox="0 0 384 512"
+        >
+          <path
+            d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"
+          ></path>
+        </svg>
+        <svg
+          class="pause"
+          xmlns="http://www.w3.org/2000/svg"
+          height="1em"
+          viewBox="0 0 320 512"
+        >
+          <path
+            d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"
+          ></path>
+        </svg>
+      </label>
+      <input
+        type="range"
+        id="volume"
+        min="0"
+        max="1"
+        step="0.01"
+        value="0.5"
+        onchange="changeVolume(this.value)"
+        aria-label="Volume slider"
+      />
+    </div>
+    <div
+      class="toggle-button toggle-right"
+      onclick="toggleSidebar('rightSidebar', this)"
+    >
+      ❯
+    </div>
+    <div id="rightSidebar" class="sidebar">
+      <h3>Favorites</h3>
+      <div id="favorite-stations"></div>
+    </div>
+    <script>
+      let selectedStation = null;
+      let player = null;
+      let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
 
-    <script src="js/scripts.js"></script>
+      function toggleSidebar(id, button) {
+        const el = document.getElementById(id);
+        const isHidden = el.classList.toggle("hidden");
+        button.classList.toggle("rotated", isHidden);
+      }
+
+      function togglePlay() {
+        if (!player) return;
+        player.playing() ? player.pause() : player.play();
+      }
+
+      function changeVolume(value) {
+        if (player) player.volume(parseFloat(value));
+      }
+
+      function searchStations() {
+        const query = document.getElementById("station-search").value;
+        axios
+          .get(
+            `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(
+              query
+            )}&limit=30`
+          )
+          .then((response) => {
+            const container = document.getElementById("stations");
+            container.innerHTML = "";
+            response.data.forEach((station) => {
+              container.appendChild(createStationElement(station));
+            });
+          })
+          .catch((error) => console.error("Station search failed:", error));
+      }
+
+      function createStationElement(station) {
+        const div = document.createElement("div");
+        div.className = "station-item";
+        div.onclick = () => selectStation(station);
+
+        const nameSpan = document.createElement("span");
+        nameSpan.textContent = station.name;
+
+        const star = document.createElement("span");
+        star.className = "favorite-btn";
+        star.innerHTML = isFavorited(station.stationuuid)
+          ? "&#9733;"
+          : "&#9734;";
+        if (isFavorited(station.stationuuid)) star.classList.add("favorited");
+        star.onclick = (e) => toggleFavorite(e, station);
+
+        div.appendChild(nameSpan);
+        div.appendChild(star);
+        return div;
+      }
+
+      function isFavorited(id) {
+        return favorites.some((fav) => fav.stationuuid === id);
+      }
+
+      function toggleFavorite(event, station) {
+        event.stopPropagation();
+        const index = favorites.findIndex(
+          (fav) => fav.stationuuid === station.stationuuid
+        );
+        if (index > -1) {
+          favorites.splice(index, 1);
+        } else {
+          favorites.push(station);
+        }
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+        renderFavorites();
+      }
+
+      function renderFavorites() {
+        const container = document.getElementById("favorite-stations");
+        container.innerHTML = "";
+        favorites.forEach((station) => {
+          container.appendChild(createStationElement(station));
+        });
+      }
+
+      function selectStation(station) {
+        selectedStation = station;
+        if (player) player.unload();
+        player = new Howl({
+          src: [station.url_resolved],
+          html5: true,
+          volume: parseFloat(document.getElementById("volume").value),
+        });
+        player.play();
+        document.getElementById("track-title").textContent = station.name;
+        document.getElementById("track-artist").textContent = station.tags;
+        document.getElementById("artwork").src =
+          station.favicon || "https://via.placeholder.com/300";
+      }
+
+      window.onload = () => {
+        searchStations();
+        renderFavorites();
+      };
+    </script>
   </body>
 </html>
