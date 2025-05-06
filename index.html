@@ -1,11 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/300px-Color_icon_red.svg.png" />
-
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Billy's Radio</title>
+    <link
+      rel="icon"
+      href="https://avatars.githubusercontent.com/u/145824344?v=4"
+      type="image/png"
+    />
     <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <link
@@ -22,6 +25,7 @@
         background-color: #121212;
         color: #ffffff;
         display: flex;
+        flex-direction: row;
         height: 100vh;
         overflow: hidden;
       }
@@ -166,6 +170,65 @@
           transform: scale(1.1);
         }
       }
+      @media (max-width: 768px) {
+        body {
+          flex-direction: column;
+          height: auto;
+          overflow: auto;
+        }
+        .sidebar {
+          width: 100% !important;
+          max-height: 40vh;
+          flex-direction: row;
+          flex-wrap: wrap;
+          justify-content: center;
+        }
+        .main {
+          flex: none;
+          padding: 10px;
+        }
+        #player-controls {
+          flex-wrap: wrap;
+          bottom: 10px;
+          left: 50%;
+          transform: translateX(-50%);
+          padding: 8px 12px;
+          font-size: 0.9em;
+          max-width: 90%;
+        }
+        .toggle-button {
+          top: 5px;
+          width: 24px;
+          height: 24px;
+          font-size: 0.8em;
+        }
+        .now-playing img {
+          width: 80%;
+        }
+        #station-search {
+          width: 100%;
+          font-size: 14px;
+          padding: 8px;
+        }
+        .station-item {
+          font-size: 14px;
+          padding: 6px;
+        }
+        .favorite-btn {
+          font-size: 18px;
+        }
+      }
+      @media (max-width: 480px) {
+        .now-playing img {
+          width: 100%;
+        }
+        .sidebar {
+          max-height: 50vh;
+        }
+        .main {
+          padding: 5px;
+        }
+      }
     </style>
   </head>
   <body>
@@ -179,12 +242,14 @@
       />
       <div id="stations"></div>
     </div>
+
     <div
       class="toggle-button toggle-left"
       onclick="toggleSidebar('leftSidebar', this)"
     >
       ❮
     </div>
+
     <div class="main" id="mainContent">
       <h1>Billy's Radio</h1>
       <p style="margin-top: -10px; color: #bbb; font-size: 0.9em">
@@ -198,6 +263,7 @@
         </div>
       </div>
     </div>
+
     <div id="player-controls">
       <label class="container">
         <input type="checkbox" onclick="togglePlay()" />
@@ -209,7 +275,7 @@
         >
           <path
             d="M73 39c-14.8-9.1-33.4-9.4-48.5-.9S0 62.6 0 80V432c0 17.4 9.4 33.4 24.5 41.9s33.7 8.1 48.5-.9L361 297c14.3-8.7 23-24.2 23-41s-8.7-32.2-23-41L73 39z"
-          ></path>
+          />
         </svg>
         <svg
           class="pause"
@@ -219,7 +285,7 @@
         >
           <path
             d="M48 64C21.5 64 0 85.5 0 112V400c0 26.5 21.5 48 48 48H80c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H48zm192 0c-26.5 0-48 21.5-48 48V400c0 26.5 21.5 48 48 48h32c26.5 0 48-21.5 48-48V112c0-26.5-21.5-48-48-48H240z"
-          ></path>
+          />
         </svg>
       </label>
       <input
@@ -233,20 +299,27 @@
         aria-label="Volume slider"
       />
     </div>
+
     <div
       class="toggle-button toggle-right"
       onclick="toggleSidebar('rightSidebar', this)"
     >
       ❯
     </div>
+
     <div id="rightSidebar" class="sidebar">
       <h3>Favorites</h3>
       <div id="favorite-stations"></div>
     </div>
+
     <script>
       let selectedStation = null;
       let player = null;
       let favorites = JSON.parse(localStorage.getItem("favorites") || "[]");
+
+      const playCheckbox = document.querySelector(
+        '#player-controls input[type="checkbox"]'
+      );
 
       function toggleSidebar(id, button) {
         const el = document.getElementById(id);
@@ -256,12 +329,23 @@
 
       function togglePlay() {
         if (!player) return;
-        player.playing() ? player.pause() : player.play();
+        if (player.playing()) {
+          player.pause();
+          playCheckbox.checked = false;
+        } else {
+          player.play();
+          playCheckbox.checked = true;
+        }
       }
 
       function changeVolume(value) {
         if (player) player.volume(parseFloat(value));
       }
+      // Function to search for stations
+      // using the Radio Browser API
+      // and display them in the sidebar
+      // with a limit of 500 results. 100-500 is the default limit.
+      // You can change the limit by modifying the URL in the axios.get call.
 
       function searchStations() {
         const query = document.getElementById("station-search").value;
@@ -269,7 +353,7 @@
           .get(
             `https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(
               query
-            )}&limit=30`
+            )}&limit=500`
           )
           .then((response) => {
             const container = document.getElementById("stations");
@@ -335,6 +419,15 @@
           src: [station.url_resolved],
           html5: true,
           volume: parseFloat(document.getElementById("volume").value),
+          onplay: () => {
+            playCheckbox.checked = true;
+          },
+          onpause: () => {
+            playCheckbox.checked = false;
+          },
+          onstop: () => {
+            playCheckbox.checked = false;
+          },
         });
         player.play();
         document.getElementById("track-title").textContent = station.name;
