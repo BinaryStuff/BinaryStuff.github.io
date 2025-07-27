@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valorant RR Tracker</title>
+    <!-- Import Google Fonts for nicer typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Link to our stylesheet -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.3.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Valorant RR Tracker</h1>
+        <p>Keep track of your Ranked Rating (RR) changes after each Valorant match.</p>
+    </header>
+
+    <main>
+        <!-- Input form for RR changes -->
+        <section id="input-section">
+            <h2>Add RR Change</h2>
+            <form id="rr-form" autocomplete="off">
+                <input type="number" id="rr-value" placeholder="RR change (e.g., 20 or -15)" required>
+                <button type="submit">Add</button>
+            </form>
+            <small>Enter positive numbers for gains, negative numbers for losses.</small>
+        </section>
+
+        <!-- Summary stats -->
+        <section id="stats-section">
+            <h2>Summary Statistics</h2>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <span class="stat-label">Total Matches:</span>
+                    <span id="stat-count" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Total RR:</span>
+                    <span id="stat-total" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Average RR:</span>
+                    <span id="stat-average" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Highest Gain:</span>
+                    <span id="stat-max" class="stat-value">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Highest Loss:</span>
+                    <span id="stat-min" class="stat-value">0</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Chart area -->
+        <section id="chart-section">
+            <h2>RR Progress Chart</h2>
+            <canvas id="rr-chart" aria-label="RR progression chart" role="img"></canvas>
+        </section>
+
+        <!-- List of entries -->
+        <section id="history-section">
+            <h2>Match History</h2>
+            <div class="table-container">
+                <table id="history-table">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>RR Change</th>
+                            <th>Running Total</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="history-body">
+                        <!-- Entries will be dynamically inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <button id="clear-data" class="danger">Clear All Data</button>
+        </section>
+    </main>
+
+    <!-- Footer credits -->
+    <footer>
+        <p>Made with ❤️ by your friendly agent. Data is stored locally in your browser.</p>
+    </footer>
+
+    <!-- Link to our script -->
+    <script src="script.js"></script>
+</body>
+</html>
