@@ -1,271 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Billy's Radio</title>
-  <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/f/fd/Color_icon_red.svg/300px-Color_icon_red.svg.png" type="image/png">
-  <!-- CDN Imports: Howler.js & Axios -->
-  <script src="https://cdn.jsdelivr.net/npm/howler@2.2.4/dist/howler.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-  <style>
-    :root {
-      --bg: #121212;
-      --sidebar-bg: #181818;
-      --primary: #fff;
-      --secondary: #b3b3b3;
-      --accent: #1DB954;
-      --shadow: rgba(0,0,0,0.7);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      display: flex;
-      height: 100vh;
-      font-family: "Segoe UI", sans-serif;
-      background: var(--bg);
-      color: var(--primary);
-      overflow: hidden;
-    }
-    /* Sidebar */
-    .sidebar {
-      width: 280px;
-      background: var(--sidebar-bg);
-      display: flex;
-      flex-direction: column;
-      padding: 1rem;
-      box-shadow: 2px 0 8px var(--shadow);
-      transition: transform 0.3s ease;
-      z-index: 10;
-    }
-    .sidebar.closed { transform: translateX(-100%); }
-    .sidebar h2 {
-      font-size: 1.5rem;
-      margin-bottom: 0.5rem;
-      text-align: center;
-    }
-    .sidebar input {
-      padding: 0.5rem;
-      border: none;
-      border-radius: 4px;
-      background: #282828;
-      color: var(--primary);
-      margin-bottom: 1rem;
-    }
-    .sidebar ul {
-      list-style: none;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .sidebar li {
-      padding: 0.5rem;
-      border-radius: 4px;
-      cursor: pointer;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      transition: background 0.2s;
-    }
-    .sidebar li:hover { background: #282828; }
-    .sidebar li button {
-      background: none;
-      border: none;
-      color: var(--secondary);
-      font-size: 1rem;
-      cursor: pointer;
-    }
-    .sidebar li button.fav { color: var(--accent); }
-    /* Main */
-    main {
-      flex: 1;
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      overflow-y: auto;
-      padding: 2rem;
-      text-align: center;
-    }
-    main h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-    main p { color: var(--secondary); margin-bottom: 2rem; }
-    .now-playing {
-      max-width: 360px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-    .now-playing img {
-      width: 100%;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px var(--shadow);
-      margin-bottom: 1rem;
-      display: none;
-    }
-    .now-playing .title { font-size: 1.5rem; margin-bottom: 0.25rem; }
-    .now-playing .artist { color: var(--secondary); }
-    /* Controls */
-    .controls {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: var(--sidebar-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 1.5rem;
-      padding: 1rem;
-      box-shadow: 0 -4px 8px var(--shadow);
-    }
-    .controls button {
-      background: none;
-      border: none;
-      color: var(--primary);
-      font-size: 1.5rem;
-      cursor: pointer;
-      transition: color 0.2s;
-    }
-    .controls button:hover { color: var(--accent); }
-    /* Volume slider styled track and green thumb */
-    .controls input[type="range"] {
-      width: 120px;
-    }
-    .controls input[type="range"]::-webkit-slider-runnable-track {
-      height: 4px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-    .controls input[type="range"]::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      background: var(--accent);
-      border: none;
-      border-radius: 50%;
-      margin-top: -5px;
-      cursor: pointer;
-    }
-    .controls input[type="range"]::-moz-range-track {
-      height: 4px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-    .controls input[type="range"]::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      background: var(--accent);
-      border: none;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-    /* Radio controls */
-    .radio-input {
-      display: flex;
-      gap: 4px;
-    }
-    .radio-input .label {
-      width: 80px;
-      height: 40px;
-      background: #282828;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 6px;
-      cursor: pointer;
-      transition: background 0.2s;
-    }
-    .radio-input input { display: none; }
-    .radio-input input:checked + .label { background: var(--accent); }
-    .radio-input .text {
-      color: var(--secondary);
-      font-weight: bold;
-    }
-    .radio-input input:checked + .label .text { color: var(--bg); }
-    /* Toggle Button */
-    .toggle {
-      position: absolute;
-      top: 6px;
-      left: 1rem;
-      background: transparent;
-      border: none;
-      color: var(--primary);
-      font-size: 1.5rem;
-      padding: 0.5rem;
-      cursor: pointer;
-      z-index: 20;
-    }
-    /* Mobile */
-    @media (max-width: 768px) {
-      body { flex-direction: column; }
-      .sidebar { position: fixed; height: 100%; top: 0; left: 0; }
-      main { margin-top: 3rem; margin-bottom: 5rem; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My App Hub</title>
+    <!-- Import Montserrat font to match the Valorant RR Tracker theme -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <button class="toggle" id="toggleSidebar">☰</button>
-  <aside class="sidebar closed" id="sidebar">
-    <h2>Search</h2>
-    <input id="searchInput" placeholder="Search stations..." />
-    <ul id="stationList"></ul>
-    <h2>Favorites</h2>
-    <ul id="favList"></ul>
-  </aside>
-  <main>
-    <h1>Billy's Radio</h1>
-    <p>2025 Edition</p>
-    <div class="now-playing">
-      <img id="artwork" src="" alt="Artwork">
-      <div class="title" id="trackTitle">Not playing</div>
-      <div class="artist" id="trackArtist"></div>
-    </div>
-    <div class="controls">
-      <div class="radio-input">
-        <input type="radio" name="action" id="playOption" value="play">
-        <label class="label" for="playOption"><span class="text">Play</span></label>
-        <input type="radio" name="action" id="pauseOption" value="pause">
-        <label class="label" for="pauseOption"><span class="text">Pause</span></label>
-        <input type="radio" name="action" id="randomOption" value="random">
-        <label class="label" for="randomOption"><span class="text">Random</span></label>
-      </div>
-      <input class="volume" type="range" id="volumeSlider" min="0" max="1" step="0.01" value="0.5" />
-    </div>
-  </main>
-  <script>
-    const sidebar = document.getElementById('sidebar');
-    const toggleBtn = document.getElementById('toggleSidebar');
-    const overlay = document.createElement('div');
-    overlay.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;z-index:9;';
-    document.body.appendChild(overlay);
-    toggleBtn.onclick = () => {
-      sidebar.classList.toggle('closed'); overlay.style.display = sidebar.classList.contains('closed') ? 'none':'block';
-    };
-    overlay.onclick = () => toggleBtn.click();
+    <!-- Hero section with a welcoming message and subtle animation -->
+    <header class="hero">
+        <h1 class="hero-title">Billy's Hub</h1>
+        <p class="hero-subtitle">A collection of some of my projects</p>
+    </header>
 
-    let player=null, stationsArr=[];
-    let favorites=JSON.parse(localStorage.getItem('favorites')||'[]');
+    <main>
+        <!-- Notation if you intend too utilize this -->
+        <!-- Toolbox grid: update these placeholders as you create new apps -->
+        <!-- Each card links to a future app; update the href and content accordingly -->
+        <section class="toolbox-grid">
+            <div class="card" tabindex="0">
+                <h3>Valorant RR Tracker</h3>
+                <p class="description">Description of your first app.</p>
+                <a href=""rrtracker/rrtracker.html" class="card-link"" class="card-link">Open</a>
+            </div>
+            <div class="card" tabindex="0">
+                <h3>Placeholder</h3>
+                <p class="description">Description of your second app.</p>
+                <a href="#" class="card-link">Open</a>
+            </div>
+            <div class="card" tabindex="0">
+                <h3>Placeholder</h3>
+                <p class="description">Description of your third app.</p>
+                <a href="#" class="card-link">Open</a>
+            </div>
+            <div class="card" tabindex="0">
+                <h3>Placeholder</h3>
+                <p class="description">Description of your fourth app.</p>
+                <a href="#" class="card-link">Open</a>
+            </div>
+        </section>
+    </main>
 
-    const searchInput=document.getElementById('searchInput');
-    const stationList=document.getElementById('stationList');
-    const favList=document.getElementById('favList');
-    const artworkEl=document.getElementById('artwork');
-    const titleEl=document.getElementById('trackTitle');
-    const artistEl=document.getElementById('trackArtist');
-    const playOption=document.getElementById('playOption');
-    const pauseOption=document.getElementById('pauseOption');
-    const randomOption=document.getElementById('randomOption');
-    const volumeSlider=document.getElementById('volumeSlider');
+    <footer>
+        <p>© <span id="year"></span> Feel free to steal this code.</p>
+    </footer>
 
-    function renderStations(list){stationsArr=list;stationList.innerHTML='';list.forEach(st=>{const li=document.createElement('li');li.innerHTML=`<span>${st.name}</span><button class="${favorites.some(f=>f.stationuuid===st.stationuuid)?'fav':''}">★</button>`;li.onclick=()=>selectStation(st);li.querySelector('button').onclick=e=>{e.stopPropagation();toggleFav(st);renderFavorites();renderStations(list);};stationList.append(li);});}
-    function loadStations(query=''){axios.get(`https://de1.api.radio-browser.info/json/stations/search?name=${encodeURIComponent(query)}&limit=500`).then(res=>renderStations(res.data)).catch(console.error);}    
-    function toggleFav(st){const idx=favorites.findIndex(f=>f.stationuuid===st.stationuuid);if(idx>-1)favorites.splice(idx,1);else favorites.push(st);localStorage.setItem('favorites',JSON.stringify(favorites));}
-    function renderFavorites(){favList.innerHTML='';favorites.forEach(st=>{const li=document.createElement('li');li.textContent=st.name;li.onclick=()=>selectStation(st);favList.append(li);});}
-    function selectStation(st){if(player)player.unload();player=new Howl({src:[st.url_resolved],html5:true,volume:parseFloat(volumeSlider.value)});player.play();titleEl.textContent=st.name;artistEl.textContent=st.tags;if(st.favicon){artworkEl.src=st.favicon;artworkEl.style.display='block';}else artworkEl.style.display='none';playOption.checked=true;}
-    function applyAction(){if(playOption.checked){if(player&&!player.playing())player.play();}else if(pauseOption.checked){if(player&&player.playing())player.pause();}else if(randomOption.checked){const rand=stationsArr[Math.floor(Math.random()*stationsArr.length)];selectStation(rand);}}
-    playOption.onchange=pauseOption.onchange=randomOption.onchange=applyAction;volumeSlider.oninput=e=>{if(player)player.volume(parseFloat(e.target.value));};searchInput.oninput=()=>loadStations(searchInput.value);
-    (function(){loadStations();renderFavorites();})();
-  </script>
+    <!-- Optional JavaScript for dynamic year and entrance animations -->
+    <script src="script.js"></script>
 </body>
 </html>
