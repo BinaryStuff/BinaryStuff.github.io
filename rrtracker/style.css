@@ -206,3 +206,21 @@ footer {
   color: #748192;
   font-size: 0.75rem;
 }
+
+/* Home button styling */
+/* The home button is added to the header for navigation back to the toolbox hub. */
+#home-button {
+  display: inline-block;
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  color: #d02e64;
+  border: 1px solid #d02e64;
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 0.85rem;
+  transition: background-color 0.2s, color 0.2s ease;
+}
+#home-button:hover {
+  background-color: #d02e64;
+  color: #fff;
+}
