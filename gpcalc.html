@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bonus Calculator</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      background: #121212;
+      color: #f1f1f1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .container {
+      width: 90%;
+      max-width: 540px;
+      background-color: #1e1e1e;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.4);
+      box-sizing: border-box;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+		
+		h6 {
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 1.05em;
+    }
+
+    input[type="number"] {
+      width: 100%;
+      padding: 14px;
+      font-size: 1em;
+      border-radius: 6px;
+      border: none;
+      background: #2a2a2a;
+      color: white;
+      box-sizing: border-box;
+      margin-bottom: 16px;
+    }
+
+    .levers {
+      background: #212121;
+      border: 1px solid #2f2f2f;
+      border-radius: 8px;
+      padding: 12px 14px;
+      margin: 10px 0 18px;
+    }
+
+    .levers legend {
+      padding: 0 6px;
+      font-weight: 600;
+      color: #dcdcdc;
+    }
+
+    .lever-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 8px 14px;
+      margin-top: 8px;
+    }
+
+    .lever-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      user-select: none;
+    }
+
+    .lever-item input {
+      transform: scale(1.2);
+      accent-color: #4caf50;
+      cursor: pointer;
+    }
+
+    .lever-item label {
+      margin: 0;
+      cursor: pointer;
+      font-size: 0.98em;
+      color: #e7e7e7;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      background-color: #4caf50;
+      border: none;
+      border-radius: 6px;
+      color: white;
+      font-size: 1.1em;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+    }
+
+    button:hover {
+      background-color: #43a047;
+    }
+
+    .result {
+      margin-top: 20px;
+      padding: 16px;
+      background-color: #2a2a2a;
+      border-radius: 6px;
+      font-size: 1em;
+      line-height: 1.6;
+    }
+
+    .muted { color: #bdbdbd; }
+
+    @media (max-width: 480px) {
+      .container { padding: 20px; }
+      input, button { font-size: 1em; padding: 12px; }
+      h2 { font-size: 1.6em; }
+      .lever-list { grid-template-columns: 1fr 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Bonus Calculator</h2>
+		<h6>August 2025</h6>
+
+    <label for="gp">Enter Gross Profit (Precut):</label>
+    <input type="number" id="gp" placeholder="Goal is 14,081.15" inputmode="decimal" step="0.01" min="0">
+
+    <!-- New: Levers checklist -->
+    <fieldset class="levers">
+      <legend>Levers Hit (each adds +1% to bonus)</legend>
+      <div class="lever-list" id="leverList">
+        <div class="lever-item">
+          <input type="checkbox" id="lever1" name="lever" value="1">
+          <label for="lever1">VMP</label>
+        </div>
+        <div class="lever-item">
+          <input type="checkbox" id="lever2" name="lever" value="1">
+          <label for="lever2">VHI%</label>
+        </div>
+        <div class="lever-item">
+          <input type="checkbox" id="lever3" name="lever" value="1">
+          <label for="lever3">Gross Adds</label>
+        </div>
+        <div class="lever-item">
+          <input type="checkbox" id="lever4" name="lever" value="1">
+          <label for="lever4">Perks</label>
+        </div>
+      </div>
+      <div class="muted" id="leverCountNote">Selected: 0 of 4</div>
+    </fieldset>
+
+    <button id="calcBtn">Calculate Bonus</button>
+
+    <div class="result" id="output"></div>
+  </div>
+
+  <script>
+    // --- Config ---
+    const GOAL = 14081.15;   // Quota/goal
+    const HAIRCUT = 0.30;    // 30% cut → pay on 70% of GP
+    const HURDLE = 70;       // Must reach 70% attainment to unlock any tier
+
+    // Utility: count checked levers
+    function getLeverCount() {
+      return [...document.querySelectorAll('input[name="lever"]:checked')].length;
+    }
+
+    // Update little "Selected: n of 4" note
+    function updateLeverCountNote() {
+      const n = getLeverCount();
+      document.getElementById('leverCountNote').textContent = `Selected: ${n} of 4`;
+    }
+
+    // Hook up lever checkboxes to update the note live
+    document.querySelectorAll('input[name="lever"]').forEach(cb => {
+      cb.addEventListener('change', updateLeverCountNote);
+    });
+    updateLeverCountNote(); // initial state (0)
+
+    // Main calc
+    function calculateBonus() {
+      const gpInput = parseFloat(document.getElementById("gp").value);
+      const leverCount = getLeverCount(); // 0–4, default 0
+
+      if (isNaN(gpInput) || gpInput < 0) {
+        document.getElementById("output").innerHTML = "❗ Please enter a valid gross profit.";
+        return;
+      }
+
+      // Attainment math
+      const percentOfGoal = (gpInput / GOAL) * 100;
+      const baseTierPct = percentOfGoal >= HURDLE ? Math.floor(percentOfGoal / 10) : 0; // 70%→7, 80%→8, etc.
+
+      // Apply haircut to GP
+      const netGP = gpInput * (1 - HAIRCUT);
+
+      // IMPORTANT: Levers only add to the final rate if the base tier is unlocked
+      const finalRatePct = baseTierPct > 0 ? baseTierPct + leverCount : 0;
+
+      const bonus = finalRatePct > 0 ? netGP * (finalRatePct / 100) : 0;
+
+      // Pretty print
+      const dollar = (n) => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+      document.getElementById("output").innerHTML = `
+        <strong>Gross Profit:</strong> $${dollar(gpInput)}<br>
+        <strong>Goal:</strong> $${dollar(GOAL)}<br>
+        <strong>Goal Completion:</strong> ${percentOfGoal.toFixed(2)}%<br>
+        <strong>Net GP (after 30% cut):</strong> $${dollar(netGP)}<br>
+        <strong>Base Tier Rate:</strong> ${baseTierPct > 0 ? baseTierPct + '%' : '0% (No Bonus)'}<br>
+        <strong>Levers Selected:</strong> ${leverCount} ${baseTierPct === 0 ? '(no effect below 70% hurdle)' : '(+' + leverCount + '%)'}<br>
+        <strong>Final Bonus Rate:</strong> ${finalRatePct}%<br>
+        <strong>Your Bonus:</strong> <span style="font-size:1.2em;">$${dollar(bonus)}</span>
+      `;
+    }
+
+    // Button handler
+    document.getElementById('calcBtn').addEventListener('click', calculateBonus);
+
+    // Optional: Enter key submits
+    document.getElementById('gp').addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') calculateBonus();
+    });
+  </script>
+</body>
+</html>
