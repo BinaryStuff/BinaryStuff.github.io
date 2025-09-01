@@ -31,7 +31,7 @@
       margin-bottom: 24px;
     }
 		
-		h6 {
+    h6 {
       text-align: center;
     }
 
@@ -122,6 +122,13 @@
 
     .muted { color: #bdbdbd; }
 
+    /* === NEW: status colors for important money numbers === */
+    .good { color: #4caf50; font-weight: 700; }
+    .bad { color: #ef5350; font-weight: 700; }
+    .warn { color: #ffeb3b; font-weight: 700; } /* readable on dark; bright yellow */
+    .big { font-size: 1.2em; }
+    .bigger { font-size: 1.25em; }
+
     @media (max-width: 480px) {
       .container { padding: 20px; }
       input, button { font-size: 1em; padding: 12px; }
@@ -133,12 +140,12 @@
 <body>
   <div class="container">
     <h2>Bonus Calculator</h2>
-		<h6>August 2025</h6>
+    <h6>September 2025</h6>
 
     <label for="gp">Enter Gross Profit (Precut):</label>
-    <input type="number" id="gp" placeholder="Goal is 14,081.15" inputmode="decimal" step="0.01" min="0">
+    <input type="number" id="gp" placeholder="Goal is $15,907.26" inputmode="decimal" step="0.01" min="0">
 
-    <!-- New: Levers checklist -->
+    <!-- Levers checklist -->
     <fieldset class="levers">
       <legend>Levers Hit (each adds +1% to bonus)</legend>
       <div class="lever-list" id="leverList">
@@ -169,9 +176,14 @@
 
   <script>
     // --- Config ---
-    const GOAL = 14081.15;   // Quota/goal
+    const GOAL = 15907.26;   // Quota/goal
     const HAIRCUT = 0.30;    // 30% cut → pay on 70% of GP
     const HURDLE = 70;       // Must reach 70% attainment to unlock any tier
+
+    // Michigan take-home calibration:
+    // Example provided: $16,750.45 GP => gross bonus $1,289.78 => take-home $1,166.06
+    // Keep-rate = 1166.06 / 1289.78465 = 0.9040734048  (~9.593% withheld)
+    const MI_BONUS_KEEP_RATE = 0.9040734048121909;
 
     // Utility: count checked levers
     function getLeverCount() {
@@ -189,6 +201,26 @@
       cb.addEventListener('change', updateLeverCountNote);
     });
     updateLeverCountNote(); // initial state (0)
+
+    // Pretty print
+    const dollar = (n) => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+
+    // Helpers to wrap text with color classes
+    function wrap(text, cls, extra='') {
+      return `<span class="${cls} ${extra}">${text}</span>`;
+    }
+
+    // Decide color class for GP vs goal
+    function gpClass(gp) {
+      return gp >= GOAL ? 'good' : 'bad';
+    }
+
+    // Decide color class for bonus based on attainment %
+    function bonusClass(percentOfGoal) {
+      if (percentOfGoal < HURDLE) return 'bad';     // <70% → no bonus
+      if (percentOfGoal < 100) return 'warn';       // 70–99.99% → almost there
+      return 'good';                                // ≥100% → achieved
+    }
 
     // Main calc
     function calculateBonus() {
@@ -212,18 +244,23 @@
 
       const bonus = finalRatePct > 0 ? netGP * (finalRatePct / 100) : 0;
 
-      // Pretty print
-      const dollar = (n) => n.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2});
+      // Background MI after-tax estimate (no extra UI)
+      const estimatedTakeHomeBonus = +(bonus * MI_BONUS_KEEP_RATE).toFixed(2);
+
+      // Classes for color
+      const gpCls = gpClass(gpInput);
+      const bCls = bonusClass(percentOfGoal);
 
       document.getElementById("output").innerHTML = `
-        <strong>Gross Profit:</strong> $${dollar(gpInput)}<br>
+        <strong>Gross Profit:</strong> ${wrap(`$${dollar(gpInput)}`, gpCls, 'big')}<br>
         <strong>Goal:</strong> $${dollar(GOAL)}<br>
         <strong>Goal Completion:</strong> ${percentOfGoal.toFixed(2)}%<br>
         <strong>Net GP (after 30% cut):</strong> $${dollar(netGP)}<br>
         <strong>Base Tier Rate:</strong> ${baseTierPct > 0 ? baseTierPct + '%' : '0% (No Bonus)'}<br>
         <strong>Levers Selected:</strong> ${leverCount} ${baseTierPct === 0 ? '(no effect below 70% hurdle)' : '(+' + leverCount + '%)'}<br>
         <strong>Final Bonus Rate:</strong> ${finalRatePct}%<br>
-        <strong>Your Bonus:</strong> <span style="font-size:1.2em;">$${dollar(bonus)}</span>
+        <strong>Your Bonus (before taxes):</strong> ${wrap(`$${dollar(bonus)}`, bCls, 'bigger')}<br>
+        <strong>Estimated Take-Home Bonus (MI):</strong> ${wrap(`$${dollar(estimatedTakeHomeBonus)}`, bCls, 'bigger')}
       `;
     }
 
@@ -234,6 +271,7 @@
     document.getElementById('gp').addEventListener('keydown', (e) => {
       if (e.key === 'Enter') calculateBonus();
     });
+    //This is for educational purposes only. do not use this example tool for official work. Your company should have a better adapted tool than my highly specialized example tool.
   </script>
 </body>
 </html>
